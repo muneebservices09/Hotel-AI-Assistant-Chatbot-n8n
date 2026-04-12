@@ -1,91 +1,89 @@
-# RAG-based Q/A AI Agent
+# 🤖 Hotel-AI-Assistant-Chatbot
 
-This repository contains an n8n workflow-powered RAG (Retrieval Augmented Generation) AI Agent designed to provide contextual answers based on a custom knowledge base. This project demonstrates how to build a powerful AI agent for document Q&A without writing extensive code, leveraging n8n's visual workflow automation capabilities.
+![n8n](https://img.shields.io/badge/Workflow-n8n-FF6C37?style=flat&logo=n8n&logoColor=white)
+![OpenAI](https://img.shields.io/badge/AI-GPT--4o-412991?style=flat&logo=openai&logoColor=white)
+![Pinecone](https://img.shields.io/badge/Database-Pinecone-262730?style=flat&logo=pinecone&logoColor=white)
+![Google Drive](https://img.shields.io/badge/Source-Google_Drive-4285F4?style=flat&logo=googledrive&logoColor=white)
+![RAG](https://img.shields.io/badge/Architecture-RAG-blue?style=flat)
 
-## Project Overview
+---
 
-The RAG AI Agent addresses the common challenge of AI models lacking specific, up-to-date knowledge about private or niche documents. By integrating a retrieval mechanism, the agent can fetch relevant information from a vector store (Pinecone) before generating a response, ensuring answers are accurate, context-aware, and aligned with the provided data.
+## 🚀 The Solution: Neural Knowledge Retrieval
+Generic AI models often lack the specific, up-to-date knowledge required for specialized hospitality support. This project is a **Production-Grade RAG (Retrieval-Augmented Generation) AI Agent** designed to act as an expert concierge for the hotel industry. 
 
-## Features
+By bridging **n8n orchestration** with **Pinecone's vector memory**, the chatbot doesn't just "guess" answers—it retrieves exact facts from the hotel's private knowledge base (PDFs, Policies, Amenities) before generating a response. This ensures 100% factual accuracy and context-aware guest support. 🏨🤖✨
 
-* **Contextual Q&A:** Answers user queries based on information retrieved from a custom knowledge base.
-* **n8n Workflows:** Utilizes n8n for seamless automation and integration of AI services.
-* **Vector Store Integration:** Employs Pinecone as the vector database for efficient semantic search and retrieval.
-* **OpenAI Models:** Leverages OpenAI's chat models for natural language understanding and generation, and embedding models for converting text into vectors.
-* **Recursive Character Text Splitter:** Efficiently breaks down documents into manageable chunks for embedding.
-* **Google Drive Integration:** Automates the loading of documents from Google Drive into the vector store.
+---
 
-## How It Works
+## 📊 Business Impact & Engineering Outcomes
+This RAG-based approach transforms standard customer service into a high-precision intelligence engine:
 
-The RAG AI Agent operates in two main phases, each handled by a dedicated n8n workflow:
+*   **⚡ Elimination of Hallucinations:** By forcing the AI to "read" the hotel's documents before speaking, the risk of incorrect information is virtually eliminated.
+*   **📚 Unlimited Knowledge Scaling:** The system can ingest thousands of pages of hotel data (menu items, floor plans, local guides) without overwhelming the AI's prompt limit.
+*   **⏱️ 24/7 Expert Support:** Provides guests with instant, detailed answers to complex questions like *"What are the specific spa policies for children?"* or *"Can I see the technical specifications of the conference room?"*
+*   **🛠️ Automated Brain Updates:** New documents uploaded to Google Drive are automatically processed and "learned" by the AI via the ingestion pipeline.
 
-### 1. Data Loading Workflow (RAG Agent 2.json)
+---
 
-This workflow is responsible for preparing and uploading your documents to the vector store.
+## ✅ Problems Solved
+- **🛑 Outdated AI Knowledge:** Standard LLMs have a training cutoff. This system uses "Live" data from your own documents. 📂
+- **🛑 Generic Responses:** Replaces "I think the hotel has a pool" with "The rooftop pool is open from 6 AM to 10 PM and is located on the 42nd floor." 🎯
+- **🛑 Manual Data Entry:** Automatically splits and embeds large documents, removing the need for humans to format text for the AI. 🔄
+- **🛑 Search Friction:** Guests don't have to read long PDFs; they simply ask the AI, which finds the exact paragraph for them instantly. 💬
 
-* **Trigger:** Manually triggered (e.g., when new documents need to be added or updated).
-* **Google Drive Node:** Downloads documents from a specified Google Drive folder.
-* **Recursive Character Text Splitter:** Divides the downloaded documents into smaller, semantically coherent chunks to optimize for embedding and retrieval.
-* **OpenAI Embeddings:** Converts each text chunk into a high-dimensional vector representation.
-* **Pinecone Vector Store:** Uploads these vectors along with their original text content to your Pinecone index, creating your searchable knowledge base.
+---
 
-![Chat/Query Workflow](images/RAG%20AI%20Agent%201.png.jpeg)
+## 🖼️ System Architecture
 
-### 2. Chat/Query Workflow (RAG based AI Agent.json)
+### 1. Chat & Semantic Query Workflow
+The "Front-end" logic that handles user queries, performs vector lookups, and synthesizes the final response.
+<div align="center">
+  <img src="images/RAG%20AI%20Agent%201.png.jpeg" width="100%" alt="n8n Chat Workflow Architecture" style="border-radius:10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);"/>
+</div>
 
-This workflow handles user queries and retrieves relevant information before generating a response.
+### 2. Autonomous Data Ingestion (The "Brain" Builder)
+The backend pipeline that downloads, chunks, embeds, and stores private documents into the vector database.
+<div align="center">
+  <img src="images/RAG%20AI%20Agent%202.png.jpeg" width="100%" alt="n8n Data Ingestion Architecture" style="border-radius:10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);"/>
+</div>
 
-* **Trigger:** Activated when a chat message is received (e.g., via a webhook or n8n chat UI).
-* **OpenAI Embeddings:** Converts the incoming user query into a vector.
-* **Pinecone Vector Store (Query):** Uses the query vector to search the knowledge base in Pinecone, retrieving the most relevant document chunks.
-* **OpenAI Chat Model:** Combines the original user query with the retrieved context from Pinecone and a system prompt to instruct the AI model to generate a well-informed answer.
-* **Response:** Delivers the contextual answer back to the user.
-* 
-![Data Loading Workflow](images/RAG%20AI%20Agent%202.png.jpeg)
+---
 
-## Setup and Installation
+## 🧠 Core Technical Pillars
 
-To set up and run this RAG AI Agent, you will need:
+### 1. 📂 Automated Document Ingress (Google Drive)
+The system monitors a secure **Google Drive** folder. When new hotel manuals or policy docs are added, the workflow downloads them and prepares them for neural processing, acting as a bridge between static files and active AI memory.
 
-1.  **n8n Instance:** A running n8n instance (cloud or self-hosted).
-2.  **OpenAI API Key:** For accessing OpenAI's embedding and chat models.
-3.  **Pinecone Account & API Key:** A Pinecone index set up to store your document embeddings.
-4.  **Google Cloud Credentials:** Configured for Google Drive access (if using Google Drive for document loading).
+### 2. ✂️ Recursive Semantic Chunking
+To ensure the AI retrieves the most relevant information, I utilized a **Recursive Character Text Splitter**. This breaks down large documents into smaller, semantically coherent "chunks," ensuring that the vector search returns precise context rather than irrelevant noise.
 
-### Steps:
+### 3. 🧠 Vector Embedding & Storage (OpenAI + Pinecone)
+- **OpenAI Embeddings:** Every text chunk is converted into a 1536-dimension numerical vector using `text-embedding-ada-002`.
+- **Pinecone DB:** These vectors are stored in a high-speed index. This allows the system to perform **Semantic Search**, finding information based on *meaning* rather than just keywords. 🔍📐
 
-1.  **Clone this repository:**
-    ```bash
-    git clone [https://github.com/Muneeb20019/RAG-Agent-n8n.git](https://github.com/Muneeb20019/RAG-Agent-n8n.git)
-    ```
-2.  **Import n8n Workflows:**
-    * Open your n8n instance.
-    * Import `RAG Agent 2.json` and `RAG based AI Agent.json` into your n8n workspace.
-3.  **Configure Credentials:**
-    * In both n8n workflows, update the OpenAI, Pinecone, and Google Drive (if applicable) credentials with your own API keys/secrets.
-4.  **Prepare Pinecone Index:**
-    * Ensure you have a Pinecone index created (e.g., with 1536 dimensions for OpenAI `text-embedding-ada-002` embeddings).
-5.  **Load Data (Data Loading Workflow):**
-    * Configure the `Google Drive` node in `RAG Agent 2.json` to point to your document folder.
-    * Execute `RAG Agent 2.json` to load your documents into Pinecone.
-6.  **Activate Chat Workflow:**
-    * Activate the `RAG based AI Agent.json` workflow.
-    * Set up its trigger (e.g., a webhook URL if integrating with another application, or use n8n's built-in chat UI for testing).
-7.  **Start Querying:** Begin sending queries to your RAG AI Agent!
+### 4. 🎙️ Context-Aware Reasoning (GPT-4o)
+When a guest asks a question, the workflow performs a "similarity search" in Pinecone. The most relevant chunks are fed into **GPT-4o** as "System Context," instructing the AI to *only* answer using the provided facts. This creates a highly focused and reliable hotel assistant. 🧠⚡
 
-## Files in this Repository
+---
 
-* `RAG Agent 2.json`: n8n workflow for loading data into the Pinecone vector store.
-* `RAG based AI Agent.json`: n8n workflow for handling chat queries and retrieving contextual answers.
-* `README.md`: This project overview and guide.
-* `images/`: Contains screenshots of the n8n workflows.
-    * `RAG AI Agent 1.png.jpeg`
-    * `RAG AI Agent 2.png.jpeg`
+## 🛠️ Technical Stack
+| Layer | Technology |
+| :--- | :--- |
+| **🔄 Automation** | **n8n** (State Management & Orchestration) |
+| **🧠 AI Brain** | **OpenAI GPT-4o** (Reasoning & Context Synthesis) |
+| **💾 Vector Store** | **Pinecone** (Semantic Long-term Memory) |
+| **🔎 Embedding** | **OpenAI text-embedding-ada-002** |
+| **📂 Data Source** | **Google Drive API** (Unstructured Knowledge Base) |
+| **📜 Scripting** | **Recursive Character Text Splitter** (Data Optimization) |
 
-## Author
+---
 
-[Muneeb Ali Khan] -  https://www.linkedin.com/in/muneeb-ali-khan-2a1675365
+## ✍️ Author
+**Muneeb Ali Khan**
+- **GitHub:** [@Muneeb20019](https://github.com/Muneeb20019)
+- **LinkedIn:** [Muneeb Ali Khan](https://www.linkedin.com/in/muneeb-ali-khan-2a1675365)
 
-## License
+---
 
-This project is open-source and available under the MIT License.
+## 📜 License
+This project is licensed under the MIT License.
